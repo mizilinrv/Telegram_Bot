@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новое сообщение</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="container">
+    <h1>Отправить сообщение всем пользователям</h1>
+    <form th:action="@{/sendBroadcastMessage}" method="post">
+        <div class="form-group">
+            <label for="message">Сообщение:</label>
+            <textarea id="message" name="message" rows="4" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+    <a href="/" class="btn btn-secondary">Главное меню</a>
+    <div th:if="${param.success}">
+        <p class="success-message">Сообщение успешно отправлено!</p>
+    </div>
+</div>
+</body>
+</html>

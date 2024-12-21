@@ -1,0 +1,114 @@
+/* Общий стиль страницы */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Стиль контейнера */
+.container {
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center; /* Выравнивание содержимого по центру */
+}
+
+/* Заголовок */
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #007bff;
+}
+
+/* Форменные группы */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left; /* Выравнивание текста слева */
+}
+
+/* Поля ввода */
+.form-control {
+    width: calc(100% - 20px);
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 0 auto 10px auto; /* Центрирование полей ввода */
+    display: block;
+}
+
+/* Кнопки */
+.btn {
+    width: calc(50% - 10px);
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin: 10px auto; /* Центрирование кнопок */
+    display: block;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Сообщение об успехе */
+.success-message {
+    text-align: center;
+    color: green;
+    margin-top: 20px;
+}
+
+/* Добавим немного стиля для textarea */
+textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+/* Стили для мобильных устройств */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .btn {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        text-decoration: none;
+    }
+
+    .success-message {
+        font-size: 1em;
+    }
+}
