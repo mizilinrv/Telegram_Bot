@@ -4,21 +4,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
-@Getter
 @Setter
-@Table(schema = "quiz_schema", name = "questions")
-public class Question {
+@Getter
+@Table(schema = "quiz_schema", name = "results")
+public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private int minPoints;
+    private int maxPoints;
     private String text;
 
     @ManyToOne
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
-
 
 }

@@ -112,3 +112,21 @@ textarea {
         font-size: 1em;
     }
 }
+/* Формы */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-control {
+    width: calc(100% - 20px);
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    display: block;
+}
+
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}

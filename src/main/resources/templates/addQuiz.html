@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать новый тест</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="container">
+    <h1>Добавить тест</h1>
+
+    <form id="quizForm" th:action="@{/addQuiz}" method="post">
+        <div class="form-group">
+            <label for="testName">Название теста:</label>
+            <input type="text" id="testName" name="title" class="form-control" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="numOptions">Количество возможных ответов:</label>
+            <input type="number" id="numOptions" class="form-control" min="1" required/>
+            <button type="button" class="btn btn-secondary" onclick="addOptions()">Добавить ответы</button>
+        </div>
+
+        <div id="optionsContainer"></div>
+
+        <div class="form-group">
+            <label for="numQuestions">Количество вопросов:</label>
+            <input type="number" id="numQuestions" class="form-control" min="1" required/>
+            <button type="button" class="btn btn-secondary" onclick="addQuestions()">Добавить вопросы</button>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="form-group">
+            <label for="numResults">Количество возможных результатов:</label>
+            <input type="number" id="numResults" class="form-control" min="1" required/>
+            <button type="button" class="btn btn-secondary" onclick="addResults()">Добавить результаты</button>
+        </div>
+
+        <div id="resultsContainer"></div>
+
+        <button type="submit" class="btn btn-primary">Сохранить тест</button>
+    </form>
+
+
+
+    <a href="/" class="btn btn-secondary">Главное меню</a>
+</div>
+
+<script src="/js/script.js"></script>
+</body>
+</html>

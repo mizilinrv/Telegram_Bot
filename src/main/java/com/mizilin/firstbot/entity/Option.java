@@ -17,7 +17,7 @@ public class Option {
     private int points;
 
     @ManyToOne
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
 
 }

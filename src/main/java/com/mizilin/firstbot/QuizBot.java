@@ -4,6 +4,7 @@ import com.mizilin.firstbot.config.BotConfig;
 import com.mizilin.firstbot.config.YamlPropertySourceFactory;
 import com.mizilin.firstbot.entity.Option;
 import com.mizilin.firstbot.entity.Question;
+import com.mizilin.firstbot.entity.Quiz;
 import com.mizilin.firstbot.entity.UniqueUser;
 import com.mizilin.firstbot.service.QuizService;
 import com.mizilin.firstbot.service.TelegramUtils;
@@ -131,7 +132,7 @@ public class QuizBot extends TelegramLongPollingBot {
     //Отправка вопросов теста
     public void sendQuestion(long chatId, int messageId, Question question) {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        for (Option option : question.getOptions()) {
+        for (Option option : question.getQuiz().getOptions()) {
             List<InlineKeyboardButton> row = Collections.singletonList(
                     telegramUtils.createButton(option.getText(), String.valueOf(option.getPoints())));
             rows.add(row);
