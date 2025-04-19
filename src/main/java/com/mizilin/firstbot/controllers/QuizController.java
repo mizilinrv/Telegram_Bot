@@ -1,15 +1,16 @@
 package com.mizilin.firstbot.controllers;
 
 import com.mizilin.firstbot.dto.QuizDto;
+import com.mizilin.firstbot.entity.Quiz;
 import com.mizilin.firstbot.service.QuizService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
+@RequestMapping("/quiz")
 public class QuizController {
 
     private final QuizService quizService;
@@ -18,16 +19,28 @@ public class QuizController {
         this.quizService = quizService;
     }
 
+    @GetMapping("/list")
+    public String listQuizzes(Model model) {
+        List<Quiz> quizzes = quizService.getAllQuizzes();
+        model.addAttribute("quizzes", quizzes);
+        return "quiz-list";
+    }
 
-    @GetMapping("/quiz/create")
+    @PostMapping("/delete/{id}")
+    public String deleteQuiz(@PathVariable Long id) {
+        quizService.deleteQuiz(id);
+        return "redirect:/quiz/list?success";
+    }
+
+    @GetMapping("/create")
     public String showQuizForm() {
-        return "addQuiz"; // HTML-файл в папке templates
+        return "addQuiz";
     }
 
     @PostMapping("/addQuiz")
-    public String saveQuiz(@ModelAttribute QuizDto quizDto, RedirectAttributes redirectAttributes) {
+    public String saveQuiz(@ModelAttribute QuizDto quizDto) {
         quizService.saveQuiz(quizDto);
-        redirectAttributes.addFlashAttribute("success", "Тест успешно сохранен!");
-        return "redirect:/quiz/create";
+        return "redirect:/quiz/create?success";
+
     }
 }

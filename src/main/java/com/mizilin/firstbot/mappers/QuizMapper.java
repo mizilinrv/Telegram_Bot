@@ -20,7 +20,6 @@ public class QuizMapper {
 
     public Quiz toEntity(Quiz quiz, QuizDto dto) {
 
-
         Set<Question> questions = dto.getQuestions().stream()
                 .map(questionDto -> questionMapper.toEntity(questionDto, quiz))
                 .collect(Collectors.toSet());

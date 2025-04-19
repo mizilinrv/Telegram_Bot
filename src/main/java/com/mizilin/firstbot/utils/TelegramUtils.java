@@ -1,6 +1,8 @@
-package com.mizilin.firstbot.service;
+package com.mizilin.firstbot.utils;
 
 import com.mizilin.firstbot.entity.Quiz;
+import com.mizilin.firstbot.service.QuizService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -18,7 +20,7 @@ public class TelegramUtils {
     @Value("${buttons.linkButtonExternalQuiz}")
     private String linkButtonExternalQuiz;
     private final QuizService quizService;
-
+    @Autowired
     public TelegramUtils(QuizService quizService) {
         this.quizService = quizService;
     }

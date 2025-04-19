@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class OptionDto {
-    private String text; // Текст ответа ("Часто", "Редко", ...)
-    private int points; // Баллы за ответ
+    private String text;
+    private int points;
 }

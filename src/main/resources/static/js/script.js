@@ -1,24 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Глобальный массив вариантов ответа
-    let globalOptions = [];
-
-    // Функция для добавления возможных ответов (один список для всех вопросов)
     window.addOptions = function () {
         let numOptions = document.getElementById("numOptions").value;
         let container = document.getElementById("optionsContainer");
         container.innerHTML = "";
-        globalOptions = []; // Очищаем массив перед добавлением новых вариантов
 
         for (let i = 1; i <= numOptions; i++) {
             let optionDiv = document.createElement("div");
             let optionText = `Ответ ${i}`;
-
             optionDiv.innerHTML = `
                 <label>${optionText}:</label>
-                <input type="text" class="form-control" required id="optionText${i}"/>
+                <input type="text" class="form-control" required name="options[${i - 1}].text" id="optionText${i}"/>
                 <label>Баллы:</label>
-                <input type="number" class="form-control" required id="optionPoints${i}"/>
+                <input type="number" class="form-control" required name="options[${i - 1}].points" id="optionPoints${i}"/>
             `;
             container.appendChild(optionDiv);
         }
@@ -41,16 +35,15 @@ document.addEventListener("DOMContentLoaded", function () {
             container.appendChild(questionDiv);
         }
     };
-});
 
-window.addResults = function () {
-    let numResults = document.getElementById("numResults").value;
-    let container = document.getElementById("resultsContainer");
-    container.innerHTML = "";
+    window.addResults = function () {
+        let numResults = document.getElementById("numResults").value;
+        let container = document.getElementById("resultsContainer");
+        container.innerHTML = "";
 
-    for (let i = 1; i <= numResults; i++) {
-        let resultDiv = document.createElement("div");
-        resultDiv.innerHTML = `
+        for (let i = 1; i <= numResults; i++) {
+            let resultDiv = document.createElement("div");
+            resultDiv.innerHTML = `
             <h3>Результат ${i}</h3>
             <label>Минимальный балл:</label>
             <input type="number" name="results[${i - 1}].minPoints" class="form-control" required/>
@@ -59,6 +52,10 @@ window.addResults = function () {
             <label>Текст результата:</label>
             <textarea name="results[${i - 1}].text" class="form-control" required></textarea>
         `;
-        container.appendChild(resultDiv);
-    }
-};
+            container.appendChild(resultDiv);
+        }
+    };
+
+});
+
+

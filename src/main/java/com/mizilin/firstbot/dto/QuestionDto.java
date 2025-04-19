@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class QuestionDto {
-    private String text; // Текст вопроса
+    private String text;
 }
 

@@ -1,4 +1,3 @@
-/* Общий стиль страницы */
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f4f4f9;
@@ -7,11 +6,11 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    align-items: flex-start; /* Выравнивание по верху страницы */
+    min-height: 100vh; /* Страница будет растягиваться по высоте, если нужно */
+    overflow-y: auto; /* Вертикальная прокрутка */
 }
 
-/* Стиль контейнера */
 .container {
     width: 100%;
     max-width: 600px;
@@ -19,7 +18,9 @@ body {
     padding: 40px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    text-align: center; /* Выравнивание содержимого по центру */
+    text-align: center;
+    min-height: 100%; /* Минимальная высота для контейнера */
+    overflow-y: auto; /* Вертикальная прокрутка */
 }
 
 /* Заголовок */
@@ -130,3 +131,21 @@ textarea {
 .btn-primary:hover {
     background-color: #0056b3;
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+

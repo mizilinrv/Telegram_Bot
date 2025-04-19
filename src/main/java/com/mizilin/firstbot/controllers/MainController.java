@@ -1,6 +1,6 @@
 package com.mizilin.firstbot.controllers;
 
-import com.mizilin.firstbot.service.QuizService;
+import com.mizilin.firstbot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,16 +8,15 @@ import org.springframework.ui.Model;
 
 @Controller
 public class MainController {
-
-    private final QuizService quizService;
+    private final UserService userService;
     @Autowired
-    public MainController(QuizService quizService) {
-        this.quizService = quizService;
+    public MainController( UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/")
     public String home(Model model) {
-        String userCount = quizService.userCount();
+        String userCount = userService.userCount();
         model.addAttribute("userCount", userCount);
         return "index";
     }

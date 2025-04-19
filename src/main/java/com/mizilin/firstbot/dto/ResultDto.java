@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class ResultDto {
-    private int minPoints; // Минимальный балл
-    private int maxPoints; // Максимальный балл
-    private String text; // Текст результата (описание)
+    private int minPoints;
+    private int maxPoints;
+    private String text;
 }
 

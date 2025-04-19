@@ -1,8 +1,6 @@
 package com.mizilin.firstbot.mappers;
 
-import com.mizilin.firstbot.dto.OptionDto;
 import com.mizilin.firstbot.dto.QuestionDto;
-import com.mizilin.firstbot.entity.Option;
 import com.mizilin.firstbot.entity.Question;
 import com.mizilin.firstbot.entity.Quiz;
 import org.springframework.stereotype.Component;

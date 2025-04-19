@@ -9,7 +9,11 @@
 <body>
 <div class="container">
     <h1></h1>
-    <a href="/newpost" class="btn btn-primary">Отправить сообщение в бот</a>
+    <a href="/post" class="btn btn-primary">Отправить сообщение в бот</a>
+    <a href="/quiz/create" class="btn btn-primary">Создать тест</a>
+    <a href="/quiz/list" class="btn btn-primary">Удалить тест</a>
+
+
     <div th:if="${userCount}">
         <p class="success-message" th:text="'Количество уникальных пользователей: ' + ${userCount}"></p>
     </div>

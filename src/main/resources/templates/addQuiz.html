@@ -10,7 +10,7 @@
 <div class="container">
     <h1>Добавить тест</h1>
 
-    <form id="quizForm" th:action="@{/addQuiz}" method="post">
+    <form id="quizForm" th:action="@{/quiz/addQuiz}" method="post">
         <div class="form-group">
             <label for="testName">Название теста:</label>
             <input type="text" id="testName" name="title" class="form-control" required/>
@@ -43,10 +43,12 @@
         <button type="submit" class="btn btn-primary">Сохранить тест</button>
     </form>
 
-
-
     <a href="/" class="btn btn-secondary">Главное меню</a>
+    <div th:if="${param.success}">
+        <p class="success-message">Тест сохранен!</p>
+    </div>
 </div>
+
 
 <script src="/js/script.js"></script>
 </body>

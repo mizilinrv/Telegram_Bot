@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список тестов</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="container">
+    <h1>Список тестов</h1>
+
+    <div th:if="${quizzes.isEmpty()}">
+        <p>Нет доступных тестов.</p>
+    </div>
+
+    <div th:each="quiz : ${quizzes}" class="form-group">
+        <p><strong th:text="${quiz.title}"></strong></p>
+        <form th:action="@{'/quiz/delete/' + ${quiz.id}}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-secondary">Удалить</button>
+        </form>
+    </div>
+
+    <a href="/" class="btn btn-secondary">Главное меню</a>
+    <div th:if="${param.success}">
+        <p class="success-message">Тест удален!</p>
+    </div>
+</div>
+</body>
+</html>

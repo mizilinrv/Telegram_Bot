@@ -17,14 +17,14 @@ public class BroadcastController {
         this.quizBot = quizBot;
     }
 
-    @GetMapping("/newpost")
+    @GetMapping("/post")
     public String showNewPostForm() {
-        return "newpost";
+        return "post";
     }
 
     @PostMapping("/sendBroadcastMessage")
     public String sendBroadcastMessage(@RequestParam("message") String message) {
         quizBot.sendBroadcastMessage(message);
-        return "redirect:/newpost?success";
+        return "redirect:/post?success";
     }
 }
