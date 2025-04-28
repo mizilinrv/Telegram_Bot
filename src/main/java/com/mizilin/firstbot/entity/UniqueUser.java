@@ -15,9 +15,12 @@ public class UniqueUser {
 
     @Id
     private Long id;
+    private boolean isAdmin;
 
-    public UniqueUser(Long id) {
+
+    public UniqueUser(Long id, boolean isAdmin) {
         this.id = id;
+        this.isAdmin = isAdmin;
     }
     public UniqueUser() {
     }

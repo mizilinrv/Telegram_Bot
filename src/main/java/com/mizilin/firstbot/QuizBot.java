@@ -7,6 +7,7 @@ import com.mizilin.firstbot.entity.Question;
 import com.mizilin.firstbot.entity.UniqueUser;
 import com.mizilin.firstbot.service.QuizService;
 import com.mizilin.firstbot.service.UserService;
+import com.mizilin.firstbot.utils.PostCreationSession;
 import com.mizilin.firstbot.utils.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -37,6 +37,7 @@ public class QuizBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final TelegramUtils telegramUtils;
     private final UserService userService;
+    private final Map<Long, PostCreationSession> postSessions = new HashMap<>();
 
 
     @Value("${messages.helloMessage}")
@@ -82,18 +83,62 @@ public class QuizBot extends TelegramLongPollingBot {
     private void handleIncomingMessage(Message message) {
         String messageText = message.getText();
         long chatId = message.getChatId();
-        userService.saveUser(chatId);
-        switch (messageText) {
-            case "/start":
-                sendPhoto(chatId);
-                sendQuizSelection(chatId);
-                break;
-            case "/psychologist":
-                sendPsychologistLink(chatId);
-                break;
-            default:
-                sendUnknownCommandMessage(chatId);
-                break;
+        long telegramId = message.getFrom().getId();
+        String text = message.getText();
+        userService.saveUser(telegramId);
+
+        if (postSessions.containsKey(telegramId)) {
+            PostCreationSession session = postSessions.get(telegramId);
+            if (session.getPostText() == null) {
+                session.setPostText(text);
+                sendMessage(chatId, "Сколько кнопок хотите добавить?");
+                return;
+            }
+
+            if (session.getButtonCount() == null) {
+                try {
+                    int count = Integer.parseInt(text);
+                    if (count <= 0 || count > 10) {
+                        sendMessage(chatId, "Введите число от 1 до 10.");
+                        return;
+                    }
+                    session.setButtonCount(count);
+                    session.initButtonTexts();
+                    sendMessage(chatId, "Введите текст для кнопки №1:");
+                } catch (NumberFormatException e) {
+                    sendMessage(chatId, "Введите корректное число кнопок.");
+                }
+                return;
+            }
+
+            if (session.isWaitingForButtons()) {
+                session.addButtonText(text);
+                if (session.isAllButtonsCollected()) {
+                    // Все кнопки собраны - показываем предпросмотр
+                    sendPostPreview(session);
+                    postSessions.remove(telegramId); // Завершаем сессию
+                } else {
+                    int nextButtonNumber = session.getCollectedButtonCount() + 1;
+                    sendMessage(chatId, "Введите текст для кнопки №" + nextButtonNumber + ":");
+                }
+                return;
+            }
+        } else {
+
+            switch (messageText) {
+                case "/start":
+                    sendPhoto(chatId);
+                    sendQuizSelection(chatId);
+                    break;
+                case "/psychologist":
+                    sendPsychologistLink(chatId);
+                    break;
+                case "/create":
+                    createPost(telegramId, chatId);
+                default:
+                    sendUnknownCommandMessage(chatId);
+                    break;
+            }
         }
     }
 
@@ -111,7 +156,7 @@ public class QuizBot extends TelegramLongPollingBot {
             quizService.startQuiz(chatId, quizId);
             sendQuestion(chatId, messageId, quizService.getNextQuestion(chatId));
         } else {
-            quizService.processAnswer(chatId,callbackData);
+            quizService.processAnswer(chatId, callbackData);
             if (quizService.hasMoreQuestions(chatId)) {
                 sendQuestion(chatId, messageId, quizService.getNextQuestion(chatId));
             } else {
@@ -217,6 +262,44 @@ public class QuizBot extends TelegramLongPollingBot {
             log.error("Error occurred" + e.getMessage());
         }
     }
+
+    public void createPost(long telegramId, long chatId) {
+        if (!isAdmin(telegramId)) {
+            sendMessage(chatId, "Недостаточно прав");
+            return;
+        }
+        postSessions.put(telegramId, new PostCreationSession(chatId));
+        sendMessage(chatId, "Отправьте текст поста, который хотите опубликовать:");
+
+    }
+
+    private void sendPostPreview(PostCreationSession session) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        for (String buttonText : session.getButtonTexts()) {
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(buttonText);
+            button.setCallbackData("button_click:" + buttonText); // В callbackData можно записать что угодно
+            rows.add(Collections.singletonList(button));
+        }
+        markup.setKeyboard(rows);
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(String.valueOf(session.getChatId()));
+        sendMessage.setText(session.getPostText());
+        sendMessage.setReplyMarkup(markup);
+
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+    public boolean isAdmin(long telegramID) {
+        return userService.isAdmin(telegramID);
+    }
+
 }
 
 

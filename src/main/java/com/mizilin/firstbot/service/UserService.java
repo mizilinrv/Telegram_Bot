@@ -11,9 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
 import static org.springframework.security.core.userdetails.User.withUsername;
 
 @Slf4j
@@ -30,8 +28,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void saveUser(long chatId) {
-        uniqueUserRepository.save(new UniqueUser(chatId));
+    public void saveUser(long telegramId) {
+        uniqueUserRepository.save(new UniqueUser(telegramId, false));
     }
 
     public String userCount() {
@@ -57,5 +55,9 @@ public class UserService implements UserDetailsService {
                 .password(user.getPassword())
                 .roles("USER")
                 .build();
+    }
+
+    public boolean isAdmin(long telegramID) {
+        return uniqueUserRepository.findByTelegramId(telegramID);
     }
 }
