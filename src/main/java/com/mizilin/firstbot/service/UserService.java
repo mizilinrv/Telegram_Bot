@@ -28,8 +28,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void saveUser(long telegramId) {
-        uniqueUserRepository.save(new UniqueUser(telegramId, false));
+    public void saveUser(long id) {
+        uniqueUserRepository.save(new UniqueUser(id));
     }
 
     public String userCount() {
@@ -56,8 +56,6 @@ public class UserService implements UserDetailsService {
                 .roles("USER")
                 .build();
     }
-
-    public boolean isAdmin(long telegramID) {
-        return uniqueUserRepository.findByTelegramId(telegramID);
-    }
 }
+
+
