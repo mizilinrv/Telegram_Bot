@@ -84,6 +84,7 @@ public class QuizBot extends TelegramLongPollingBot {
         long chatId = message.getChatId();
         long telegramId = message.getFrom().getId();
         userService.saveUser(telegramId);
+        //System.out.println(message.getForwardFromChat().getId());
         if (buttonCreationStates.containsKey(telegramId)) {
             if (messageText.equals("/start")) {
                 resetButtonCreationProcess(telegramId, chatId);
@@ -285,6 +286,7 @@ public class QuizBot extends TelegramLongPollingBot {
             case CONFIRMATION:
                 if (messageText.equalsIgnoreCase("Да")) {
                     sendPostWithButtons(chatId, state);
+                    sendCustomButtonsToChannel("-1002657134751",state);
                     buttonCreationStates.remove(telegramId);
                 } else if (messageText.equalsIgnoreCase("Нет")) {
                     sendMessage(chatId, "Начнём заново.");
@@ -312,6 +314,26 @@ public class QuizBot extends TelegramLongPollingBot {
             execute(message);
         } catch (TelegramApiException e) {
             log.error("Error occurred: " + e.getMessage());
+        }
+    }
+
+    private void sendCustomButtonsToChannel(String channelChatId, ButtonCreationState state) {
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        for (String text : state.buttonTexts) {
+            List<InlineKeyboardButton> row = Collections.singletonList(
+                    telegramUtils.createButton(text, text));
+            rows.add(row);
+        }
+        InlineKeyboardMarkup markup = telegramUtils.createMarkup(rows);
+
+        SendMessage message = new SendMessage();
+        message.setChatId(channelChatId);
+        message.setText(state.postText);
+        message.setReplyMarkup(markup);
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Error occurred" + e.getMessage());
         }
     }
     private void sendPostPreviewWithButtons(long chatId, ButtonCreationState state) {
