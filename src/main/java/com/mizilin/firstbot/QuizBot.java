@@ -6,6 +6,7 @@ import com.mizilin.firstbot.entity.Question;
 import com.mizilin.firstbot.entity.UniqueUser;
 import com.mizilin.firstbot.service.QuizService;
 import com.mizilin.firstbot.service.UserService;
+import com.mizilin.firstbot.utils.ButtonCreationState;
 import com.mizilin.firstbot.utils.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class QuizBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final TelegramUtils telegramUtils;
     private final UserService userService;
+    private final Map<Long, ButtonCreationState> buttonCreationStates = new HashMap<>();
 
     @Value("${helloMessage}")
     private String helloMessage;
@@ -78,6 +80,18 @@ public class QuizBot extends TelegramLongPollingBot {
         long chatId = message.getChatId();
         long telegramId = message.getFrom().getId();
         userService.saveUser(telegramId);
+        //System.out.println(message.getForwardFromChat().getId());
+        if (buttonCreationStates.containsKey(telegramId)) {
+            if (messageText.equals("/start")) {
+                resetButtonCreationProcess(telegramId, chatId);
+                sendPhoto(chatId);
+                sendQuizSelection(chatId);
+            } else {
+                processButtonCreationStep(telegramId, chatId, messageText);
+            }
+            return; // Прерываем обработку других команд
+        }
+
             switch (messageText) {
                 case "/start":
                     sendPhoto(chatId);
@@ -86,11 +100,15 @@ public class QuizBot extends TelegramLongPollingBot {
                 case "/psychologist":
                     sendPsychologistLink(chatId);
                     break;
+                case "/createbutton":
+                    startButtonCreationProcess(telegramId, chatId);
+                    break;
                 default:
                     sendUnknownCommandMessage(chatId);
                     break;
             }
         }
+
 
     // Обработка возвращенных данных с кнопок
     private void handleCallbackQuery(CallbackQuery callbackQuery) {
@@ -212,6 +230,147 @@ public class QuizBot extends TelegramLongPollingBot {
             log.error("Error occurred" + e.getMessage());
         }
     }
+
+    private void startButtonCreationProcess(long telegramId, long chatId) {
+        if (buttonCreationStates.containsKey(telegramId)) {
+            sendMessage(chatId, "Вы уже начали процесс создания кнопок. Завершите его или введите /start для сброса.");
+            return;
+        }
+        ButtonCreationState state = new ButtonCreationState();
+        state.stage = ButtonCreationState.Stage.AWAITING_POST_TEXT;
+        buttonCreationStates.put(telegramId, state);
+        sendMessage(chatId, "Пришлите текст поста, к которому хотите добавить кнопки:");
+    }
+
+    private void processButtonCreationStep(long telegramId, long chatId, String messageText) {
+        ButtonCreationState state = buttonCreationStates.get(telegramId);
+
+        switch (state.stage) {
+            case AWAITING_POST_TEXT:
+                state.postText = messageText;
+                state.stage = ButtonCreationState.Stage.AWAITING_BUTTON_COUNT;
+                sendMessage(chatId, "Введите количество кнопок, которое хотите создать:");
+                break;
+
+            case AWAITING_BUTTON_COUNT:
+                try {
+                    int count = Integer.parseInt(messageText);
+                    if (count <= 0 || count > 10) {
+                        sendMessage(chatId, "Введите число от 1 до 10.");
+                        return;
+                    }
+                    state.buttonCount = count;
+                    state.buttonTexts.clear();
+                    state.stage = ButtonCreationState.Stage.AWAITING_BUTTON_TEXTS;
+                    sendMessage(chatId, "Введите текст для кнопки 1:");
+                } catch (NumberFormatException e) {
+                    sendMessage(chatId, "Пожалуйста, введите корректное число.");
+                }
+                break;
+
+            case AWAITING_BUTTON_TEXTS:
+                state.buttonTexts.add(messageText);
+                if (state.buttonTexts.size() < state.buttonCount) {
+                    sendMessage(chatId, "Введите текст для кнопки " + (state.buttonTexts.size() + 1) + ":");
+                } else {
+                    sendPostPreviewWithButtons(chatId, state);
+                    sendMessage(chatId, "Правильно ли создан пост с кнопками? (Да / Нет)");
+                    state.stage = ButtonCreationState.Stage.CONFIRMATION;
+                }
+                break;
+
+            case CONFIRMATION:
+                if (messageText.equalsIgnoreCase("Да")) {
+                    sendPostWithButtons(chatId, state);
+                    sendCustomButtonsToChannel("-1002657134751",state);
+                    buttonCreationStates.remove(telegramId);
+                } else if (messageText.equalsIgnoreCase("Нет")) {
+                    sendMessage(chatId, "Начнём заново.");
+                    startButtonCreationProcess(telegramId, chatId);
+                } else {
+                    sendMessage(chatId, "Пожалуйста, ответьте 'Да' или 'Нет'.");
+                }
+                break;
+        }
+    }
+
+    private void sendCustomButtons(long chatId, List<String> buttonTexts) {
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        for (String text : buttonTexts) {
+            List<InlineKeyboardButton> row = Collections.singletonList(
+                    telegramUtils.createButton(text, text)); // callbackData = текст кнопки
+            rows.add(row);
+        }
+        InlineKeyboardMarkup markup = telegramUtils.createMarkup(rows);
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("Вот ваши кнопки:");
+        message.setReplyMarkup(markup);
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Error occurred: " + e.getMessage());
+        }
+    }
+
+    private void sendCustomButtonsToChannel(String channelChatId, ButtonCreationState state) {
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        for (String text : state.buttonTexts) {
+            List<InlineKeyboardButton> row = Collections.singletonList(
+                    telegramUtils.createButton(text, text));
+            rows.add(row);
+        }
+        InlineKeyboardMarkup markup = telegramUtils.createMarkup(rows);
+
+        SendMessage message = new SendMessage();
+        message.setChatId(channelChatId);
+        message.setText(state.postText);
+        message.setReplyMarkup(markup);
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Error occurred" + e.getMessage());
+        }
+    }
+    private void sendPostPreviewWithButtons(long chatId, ButtonCreationState state) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText(state.postText);
+
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        for (String btnText : state.buttonTexts) {
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(btnText);
+            button.setCallbackData("callback_" + btnText); // пример callback data
+
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            row.add(button);
+            rows.add(row);
+        }
+
+        markup.setKeyboard(rows);
+        message.setReplyMarkup(markup);
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Error occurred" + e.getMessage());
+        }
+    }
+
+    // Отправляем итоговый пост с кнопками
+    private void sendPostWithButtons(long chatId, ButtonCreationState state) {
+        sendPostPreviewWithButtons(chatId, state);
+        sendMessage(chatId, "Пост с кнопками успешно создан!");
+    }
+
+    // Сброс процесса создания кнопок
+    private void resetButtonCreationProcess(long telegramId, long chatId) {
+        buttonCreationStates.remove(telegramId);
+        sendMessage(chatId, "Процесс создания кнопок отменён. Возвращаемся в главное меню.");
+    }
+
 
 }
 
