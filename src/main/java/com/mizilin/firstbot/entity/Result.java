@@ -1,9 +1,9 @@
 package com.mizilin.firstbot.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Setter
@@ -15,10 +15,12 @@ public class Result {
     private Long id;
     private int minPoints;
     private int maxPoints;
+    @Column(columnDefinition = "TEXT")
     private String text;
 
     @ManyToOne
     @JoinColumn(name = "quiz_id")
+    @JsonBackReference("quiz-results")
     private Quiz quiz;
 
 }

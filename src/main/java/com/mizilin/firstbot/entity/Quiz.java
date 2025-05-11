@@ -1,9 +1,9 @@
 package com.mizilin.firstbot.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Set;
 
 
@@ -18,12 +18,15 @@ public class Quiz {
     private String title;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference("quiz-questions")
     private Set<Question> questions;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference("quiz-results")
     private Set<Result> results;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference("quiz-options")
     private Set<Option> options;
 
 }

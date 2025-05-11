@@ -1,8 +1,10 @@
 package com.mizilin.firstbot.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class OptionDto {
     private String text;
     private int points;

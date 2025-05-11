@@ -1,7 +1,6 @@
 package com.mizilin.firstbot;
 
 import com.mizilin.firstbot.config.BotConfig;
-import com.mizilin.firstbot.config.YamlPropertySourceFactory;
 import com.mizilin.firstbot.entity.Option;
 import com.mizilin.firstbot.entity.Question;
 import com.mizilin.firstbot.entity.UniqueUser;
@@ -30,40 +29,37 @@ import java.util.*;
 
 @Slf4j
 @Component
-@PropertySource(value = "classpath:values.yml", factory = YamlPropertySourceFactory.class)
+@PropertySource(value = "classpath:messageBot.properties", encoding = "UTF-8")
 public class QuizBot extends TelegramLongPollingBot {
     private final QuizService quizService;
     private final BotConfig botConfig;
     private final TelegramUtils telegramUtils;
     private final UserService userService;
 
-    @Value("${messages.helloMessage}")
+    @Value("${helloMessage}")
     private String helloMessage;
-    @Value("${buttons.textButtonAccount}")
+    @Value("${textButtonAccount}")
     private String textButtonAccount;
-    @Value("${buttons.linkButtonAccount}")
+    @Value("${linkButtonAccount}")
     private String linkButtonAccount;
-    @Value("${messages.unknownCommandMessage}")
+    @Value("${unknownCommandMessage}")
     private String unknownCommandMessage;
-    @Value("${messages.helloFirstMessage}")
+    @Value("${helloFirstMessage}")
     private String helloFirstMessage;
+
 
     @Autowired
     public QuizBot(QuizService quizService, BotConfig botConfig, TelegramUtils telegramUtils, UserService userService) {
+        super(botConfig.getBotToken());
         this.quizService = quizService;
         this.botConfig = botConfig;
         this.telegramUtils = telegramUtils;
         this.userService = userService;
-    }
 
+    }
     @Override
     public String getBotUsername() {
         return botConfig.getBotUsername();
-    }
-
-    @Override
-    public String getBotToken() {
-        return botConfig.getBotToken();
     }
 
     //Проверка, есть ли новые сообщения

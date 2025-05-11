@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,18 +16,26 @@ public class QuizService {
 
     private final QuizRepository quizRepository;
     private final QuizMapper quizMapper;
+
+    private final QuizCacheService quizCacheService;
     private final Map<Long, QuizSession> sessions = new ConcurrentHashMap<>();
 
 
     @Autowired
-    public QuizService(QuizRepository quizRepository, QuizMapper quizMapper) {
+    public QuizService(QuizRepository quizRepository, QuizMapper quizMapper, QuizCacheService quizCacheService) {
         this.quizRepository = quizRepository;
         this.quizMapper = quizMapper;
+        this.quizCacheService = quizCacheService;
     }
 
     @Transactional
     public void startQuiz(Long chatId, Long quizId) {
-        Quiz quiz = quizRepository.findWithQuestionsAndOptionsAndResultsById(quizId);
+        Quiz quiz = quizCacheService.getCachedQuiz(quizId);
+        if (quiz == null) {
+            quiz = quizRepository.findWithQuestionsAndOptionsAndResultsById(quizId);
+            quizCacheService.cacheQuiz(quizId, quiz);
+
+        }
         List<Question> questions = new ArrayList<>(quiz.getQuestions());
         List<Result> results = new ArrayList<>(quiz.getResults());
         sessions.put(chatId, new QuizSession(questions, results));
@@ -60,10 +67,6 @@ public class QuizService {
         return quizRepository.findAll();
     }
 
-    public Quiz getQuizById(Long id) {
-        return quizRepository.findWithQuestionsAndOptionsAndResultsById(id);
-    }
-
     @Transactional
     public void saveQuiz(QuizDto quizDto) {
         Quiz quiz = new Quiz();
@@ -77,5 +80,6 @@ public class QuizService {
     @Transactional
     public void deleteQuiz(Long id) {
         quizRepository.deleteById(id);
+        quizCacheService.deleteCachedQuiz(id);
     }
 }

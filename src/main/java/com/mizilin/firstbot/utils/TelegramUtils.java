@@ -15,9 +15,9 @@ import java.util.List;
 @Component
 public class TelegramUtils {
 
-    @Value("${buttons.textButtonExternalQuiz}")
+    @Value("${textButtonExternalQuiz}")
     private String textButtonExternalQuiz;
-    @Value("${buttons.linkButtonExternalQuiz}")
+    @Value("${linkButtonExternalQuiz}")
     private String linkButtonExternalQuiz;
     private final QuizService quizService;
     @Autowired

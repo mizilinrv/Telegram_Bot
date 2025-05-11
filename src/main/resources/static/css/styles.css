@@ -1,3 +1,4 @@
+/* Основной стиль для body */
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f4f4f9;
@@ -6,11 +7,12 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Выравнивание по верху страницы */
-    min-height: 100vh; /* Страница будет растягиваться по высоте, если нужно */
-    overflow-y: auto; /* Вертикальная прокрутка */
+    align-items: center; /* Центрируем содержимое по вертикали */
+    min-height: 100vh;
+    overflow-y: auto;
 }
 
+/* Стиль для контейнера */
 .container {
     width: 100%;
     max-width: 600px;
@@ -19,48 +21,46 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     text-align: center;
-    min-height: 100%; /* Минимальная высота для контейнера */
-    overflow-y: auto; /* Вертикальная прокрутка */
 }
 
 /* Заголовок */
 h1 {
-    font-size: 2em;
-    margin-bottom: 20px;
+    font-size: 2.5em;
+    margin-bottom: 30px;
     color: #007bff;
+    font-weight: 600;
 }
 
 /* Форменные группы */
 .form-group {
     margin-bottom: 20px;
-    text-align: left; /* Выравнивание текста слева */
+    text-align: left;
 }
 
 /* Поля ввода */
 .form-control {
-    width: calc(100% - 20px);
-    padding: 12px;
+    width: 100%;
+    padding: 15px;
     border: 1px solid #ced4da;
-    border-radius: 4px;
+    border-radius: 8px;
     box-sizing: border-box;
-    margin: 0 auto 10px auto; /* Центрирование полей ввода */
-    display: block;
+    margin: 0 auto 20px;
+    font-size: 1em;
+    color: #333;
 }
 
-/* Кнопки */
+/* Кнопка */
 .btn {
-    width: calc(50% - 10px);
-    padding: 12px;
+    width: 100%;
+    padding: 15px;
     background-color: #007bff;
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1.2em;
     transition: background-color 0.3s;
-    margin: 10px auto; /* Центрирование кнопок */
-    display: block;
-    text-decoration: none;
+    margin: 10px 0;
 }
 
 .btn-primary {
@@ -71,81 +71,22 @@ h1 {
     background-color: #0056b3;
 }
 
-.btn-secondary {
-    background-color: #6c757d;
-}
-
-.btn-secondary:hover {
-    background-color: #5a6268;
-}
-
-/* Сообщение об успехе */
-.success-message {
-    text-align: center;
-    color: green;
-    margin-top: 20px;
-}
-
-/* Добавим немного стиля для textarea */
-textarea {
-    resize: vertical;
-    height: 100px;
-}
-
-/* Стили для мобильных устройств */
+/* Мобильная версия */
 @media (max-width: 600px) {
     .container {
-        padding: 10px;
+        padding: 20px;
     }
 
     h1 {
-        font-size: 1.5em;
+        font-size: 2em;
+    }
+
+    .form-control {
+        padding: 12px;
+        font-size: 1em;
     }
 
     .btn {
-        width: 80%;
-        margin-left: auto;
-        margin-right: auto;
-        text-decoration: none;
-    }
-
-    .success-message {
         font-size: 1em;
     }
 }
-/* Формы */
-.form-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
-
-.form-control {
-    width: calc(100% - 20px);
-    padding: 12px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    display: block;
-}
-
-
-.btn-primary:hover {
-    background-color: #0056b3;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
-
