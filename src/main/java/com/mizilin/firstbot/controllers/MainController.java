@@ -1,22 +1,18 @@
 package com.mizilin.firstbot.controllers;
 
 import com.mizilin.firstbot.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@RequiredArgsConstructor
 public class MainController {
     private final UserService userService;
-    @Autowired
-    public MainController( UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping("/")
-    public String home(Model model) {
-        String userCount = userService.userCount();
+    public String home(final Model model) {
+        final String userCount = userService.userCount();
         model.addAttribute("userCount", userCount);
         return "index";
     }

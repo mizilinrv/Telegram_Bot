@@ -2,22 +2,17 @@ package com.mizilin.firstbot.service;
 
 import com.mizilin.firstbot.entity.Question;
 import com.mizilin.firstbot.entity.Result;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class QuizSession {
 
     private final List<Question> questions;
     private final List<Result> results;
     private int currentQuestionIndex = 0;
     private int userPoints = 0;
-
-
-    public QuizSession(List<Question> questions, List<Result> results) {
-        this.questions = questions;
-        this.results = results;
-    }
-
     public Question getNextQuestion() {
         return questions.get(currentQuestionIndex++);
     }
@@ -26,7 +21,7 @@ public class QuizSession {
         return currentQuestionIndex < questions.size();
     }
 
-    public void processAnswer(String answer) {
+    public void processAnswer(final String answer) {
         userPoints += Integer.parseInt(answer);
     }
 

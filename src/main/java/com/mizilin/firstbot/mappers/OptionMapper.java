@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OptionMapper {
-    public Option toEntity(OptionDto optionDto, Quiz quiz) {
-        Option option = new Option();
+    public Option toEntity(final OptionDto optionDto, final Quiz quiz) {
+        final Option option = new Option();
         option.setText(optionDto.getText());
         option.setPoints(optionDto.getPoints());
         option.setQuiz(quiz);

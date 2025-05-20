@@ -12,16 +12,17 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class BotInitializer {
+public final class BotInitializer {
 
     private final QuizBot quizBot;
 
     @PostConstruct
     public void init() {
         try {
-            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+            final TelegramBotsApi botsApi =
+                    new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(quizBot);
-        } catch (TelegramApiException e) {
+        } catch (final TelegramApiException e) {
             log.error(String.valueOf(e));
         }
     }

@@ -1,8 +1,8 @@
 package com.mizilin.firstbot.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.*;
 
 @Entity
 @Setter

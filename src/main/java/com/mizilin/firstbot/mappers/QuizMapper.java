@@ -18,7 +18,7 @@ public class QuizMapper {
     private final QuestionMapper questionMapper;
     private final ResultMapper resultMapper;
 
-    public Quiz toEntity(Quiz quiz, QuizDto dto) {
+    public Quiz toEntity(final Quiz quiz, final QuizDto dto) {
 
         Set<Question> questions = dto.getQuestions().stream()
                 .map(questionDto -> questionMapper.toEntity(questionDto, quiz))
@@ -29,7 +29,7 @@ public class QuizMapper {
                 .collect(Collectors.toSet());
 
         Set<Option> options = dto.getOptions().stream()
-                .map(optionDto -> optionMapper.toEntity(optionDto, quiz)) // Передаем quiz в OptionMapper
+                .map(optionDto -> optionMapper.toEntity(optionDto, quiz))
                 .collect(Collectors.toSet());
 
         quiz.setQuestions(questions);

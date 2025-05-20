@@ -1,9 +1,10 @@
 package com.mizilin.firstbot.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.*;
+
 import java.util.Set;
 
 

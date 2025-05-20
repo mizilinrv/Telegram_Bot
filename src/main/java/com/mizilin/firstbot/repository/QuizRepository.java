@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
     @EntityGraph(attributePaths = {"questions", "options", "results"})
     Quiz findWithQuestionsAndOptionsAndResultsById(Long id);
-
 }

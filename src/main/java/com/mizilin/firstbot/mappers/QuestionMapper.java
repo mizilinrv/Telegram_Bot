@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuestionMapper {
 
-    public Question toEntity(QuestionDto questionDto, Quiz quiz) {
-        Question question = new Question();
+    public Question toEntity(final QuestionDto questionDto, final Quiz quiz) {
+        final Question question = new Question();
         question.setText(questionDto.getText());
         question.setQuiz(quiz);
         return question;

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResultMapper {
 
-    public Result toEntity(ResultDto resultDto, Quiz quiz) {
-        Result result = new Result();
+    public Result toEntity(final ResultDto resultDto, final Quiz quiz) {
+        final Result result = new Result();
         result.setText(resultDto.getText());
         result.setMinPoints(resultDto.getMinPoints());
         result.setMaxPoints(resultDto.getMaxPoints());
